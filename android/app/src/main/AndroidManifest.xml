@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.quantum.mq06f">
-   <application
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
         android:label="mq06f"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">

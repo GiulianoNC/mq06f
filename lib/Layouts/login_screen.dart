@@ -198,6 +198,27 @@ class _LoginScreenState extends State<LoginScreen> {
                           child:Ink(
                             child:   MyElevatedButton(
                               onPressed: ()  async {
+                                if (direccion.isEmpty || solicitante.isEmpty || estAprobacion.isEmpty) {
+                                  showDialog<String>(
+                                    context: context,
+                                    builder: (BuildContext context) => AlertDialog(
+                                      title: const Text('ERROR'),
+                                      content: const Text('Por favor, completa todos los campos obligatorios en configuración'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            // Cambia al segundo controlador (página 1)
+                                            controller.jumpToPage(1);
+                                            Navigator.pop(context, 'OK');
+                                          },
+                                          child: const Text('OK'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                 // Evita realizar la solicitud si falta información.
+                                }
+
                                 //yo
                                 if (direccion.isEmpty){
                                   direccion = value3;
@@ -228,6 +249,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 //transformo el usuario y contraseña en base 64
                                 autorizacionGlobal = 'Basic '+base64Encode(utf8.encode('$login:$password'));
                                 print(autorizacionGlobal );
+                                Navigator.pushNamed(context, "/congrats");
 
                                 var _headers = {
                                   "Authorization" : autorizacionGlobal,

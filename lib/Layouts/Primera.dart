@@ -42,7 +42,7 @@ class _PrimeraState extends State<Primera> {
       'Content-Type': 'application/json',
     };
 
-    var response = await http.post(url, body: _payload, headers: _headers);
+    var response = await http.post(url, headers: _headers).timeout(Duration(seconds: 60));
 
     final jsonData = jsonDecode(response.body);
     final rowset = jsonData['MQ0601A_DATAREQ']['rowset'];
@@ -120,7 +120,7 @@ class _PrimeraState extends State<Primera> {
               );
             } else if (snapshotOrdenes.hasError) {
               return Center(
-                child: Text('Error: ${snapshotOrdenes.error}'),
+                child: Text('Error: check configuration or Login ${snapshotOrdenes.error}'),
               );
             } else {
               final ordenNumeros = snapshotOrdenes.data;
@@ -209,7 +209,7 @@ class _PrimeraState extends State<Primera> {
                                                 "Authorization" : autorizacionGlobal,
                                                 'Content-Type': 'application/json',
                                               };
-                                              var response = await http.post(url, body: _payload, headers: _headers);
+                                              var response = await http.post(url, headers: _headers).timeout(Duration(seconds: 60));
                                               respuesta =response.body.toString();
 
                                               print("este es el status " + response.statusCode.toString());
