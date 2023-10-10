@@ -198,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child:Ink(
                             child:   MyElevatedButton(
                               onPressed: ()  async {
-                                if (direccion.isEmpty || solicitante.isEmpty || estAprobacion.isEmpty) {
+                               /* if (direccion.isEmpty) {
                                   showDialog<String>(
                                     context: context,
                                     builder: (BuildContext context) => AlertDialog(
@@ -217,7 +217,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   );
                                  // Evita realizar la solicitud si falta información.
-                                }
+                                }*/
 
                                 //yo
                                 if (direccion.isEmpty){
@@ -414,6 +414,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderSide: BorderSide.none,
                             ),
                           ),
+                          textAlign: TextAlign.center, // Centra el texto horizontalmente dentro del TextField
                           onChanged: (value) {
                             value=  value.toUpperCase() ;
                             est1 = value;
@@ -422,7 +423,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         )
                     ),),
                 Expanded(
-                    child:                  Container(
+                    child:   Container(
                         padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                         child: TextField(
                           controller: myController7,
@@ -441,6 +442,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderSide: BorderSide.none,
                             ),
                           ),
+                          textAlign: TextAlign.center, // Centra el texto horizontalmente dentro del TextField
                           onChanged: (value) {
                             value=  value.toUpperCase() ;
                             est2 = value;
@@ -472,6 +474,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderSide: BorderSide.none,
                           ),
                         ),
+                        textAlign: TextAlign.center, // Centra el texto horizontalmente dentro del TextField
                         onChanged: (value) {
                           value=  value.toUpperCase() ;
                           est3 = value;
@@ -499,6 +502,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderSide: BorderSide.none,
                             ),
                           ),
+                          textAlign: TextAlign.center, // Centra el texto horizontalmente dentro del TextField
                           onChanged: (value) {
                             value=  value.toUpperCase() ;
                             est4 = value;
@@ -529,6 +533,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderSide: BorderSide.none,
                           ),
                         ),
+                        textAlign: TextAlign.center, // Centra el texto horizontalmente dentro del TextField
                         onChanged: (value) {
                           value=  value.toUpperCase() ;
                           est5 = value;
@@ -556,6 +561,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderSide: BorderSide.none,
                             ),
                           ),
+                          textAlign: TextAlign.center, // Centra el texto horizontalmente dentro del TextField
                           onChanged: (value) {
                             value=  value.toUpperCase() ;
                             est6 = value;

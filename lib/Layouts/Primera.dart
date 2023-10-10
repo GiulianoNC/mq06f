@@ -42,7 +42,7 @@ class _PrimeraState extends State<Primera> {
       'Content-Type': 'application/json',
     };
 
-    var response = await http.post(url, headers: _headers).timeout(Duration(seconds: 60));
+    var response = await http.post(url, body: _payload, headers: _headers).timeout(Duration(seconds: 60));
 
     final jsonData = jsonDecode(response.body);
     final rowset = jsonData['MQ0601A_DATAREQ']['rowset'];
@@ -164,7 +164,10 @@ class _PrimeraState extends State<Primera> {
                                       bool isApproving = false; // Variable para rastrear si se está aprobando
 
                                       return AlertDialog(
-                                        title: Text('Orden  N°$ordenN'),
+                                        title: Text('Orden  N°$ordenN',    style: TextStyle(
+                                        color: Color.fromRGBO(102, 45, 145, 30), // Color RGB (rojo, verde, azul, opacidad)
+                                        fontSize: 20.0, // Puedes ajustar el tamaño de la fuente según tus preferencias
+                                      ),  ),
                                         actions: <Widget>[
                                           ElevatedButton(
                                             style: ButtonStyle(
@@ -180,7 +183,7 @@ class _PrimeraState extends State<Primera> {
                                               Navigator.of(context).pop();
                                             },
                                           ),
-                                          ElevatedButton(
+                                         ElevatedButton(
                                             style: ButtonStyle(
                                               backgroundColor: MaterialStateProperty.all<Color>(Color.fromRGBO(212 , 20, 90, 50)),
                                               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -193,7 +196,7 @@ class _PrimeraState extends State<Primera> {
                                             onPressed: () async {
                                               // Aquí puedes hacer lo que quieras con el texto ingresado
                                               var baseUrl =  direc;
-                                              late String api = "/jderest/v3/orchestrator/MQ0602A_ORCH";
+                                              late String api = "jderest/v3/orchestrator/MQ0602A_ORCH";
                                               var url = Uri.parse(baseUrl + api);
 
                                               var _payload =  json.encode (
@@ -209,14 +212,13 @@ class _PrimeraState extends State<Primera> {
                                                 "Authorization" : autorizacionGlobal,
                                                 'Content-Type': 'application/json',
                                               };
-                                              var response = await http.post(url, headers: _headers).timeout(Duration(seconds: 60));
+                                              var response = await http.post(url, body: _payload, headers: _headers).timeout(Duration(seconds: 60));
                                               respuesta =response.body.toString();
 
                                               print("este es el status " + response.statusCode.toString());
 
                                               print ( estadoAprobacionG );
                                               setState(() {
-                                                // Aquí puedes recargar los datos o realizar una nueva solicitud HTTP si es necesario
                                                  _listado = obtenerRowset(); // Si necesitas recargar los datos
 
                                               });
@@ -244,137 +246,31 @@ class _PrimeraState extends State<Primera> {
                               ),
                             ),
                             SizedBox(height: 10),
-                            Text(" ${rowData['Orden_Tipo']}" + " | ${rowData['Desc_Equipo']}"+ " | ${rowData['Estado']}", textAlign: TextAlign.center,),
+                            Text(" ${rowData['Orden_Tipo']}" + " | ${rowData['Desc_Equipo']}"+
+                                " | ${rowData['Estado']}", style: TextStyle(
+                              fontSize: 12.0,
+                              color: Color.fromRGBO(102 ,45, 145, 30), // Establece el color RGB aquí (en este caso, rojo)
+                            ),
+                              textAlign: TextAlign.center,),
                             // Text(" ${rowData['Desc_Equipo']}"),
-                            Text("Fecha Solicitud: ${rowData['Fecha_solicitud']}", textAlign: TextAlign.center,),
+                            Text("Fecha Solicitud: ${rowData['Fecha_solicitud']}", style: TextStyle(
+                              fontSize: 15.0,
+                              color: Color.fromRGBO(102 ,45, 145, 30), // Establece el color RGB aquí (en este caso, rojo)
+                            ),
+                              textAlign: TextAlign.center,),
                             Text(" ${rowData['Descripcion']}",style: TextStyle(
                         fontSize: 12.0,
-                        ), textAlign: TextAlign.center,),
-                            Text("Caso: ${rowData['Caso']}"),
+                              color: Color.fromRGBO(102 ,45, 145, 30), // Establece el color RGB aquí (en este caso, rojo)
+                            ), textAlign: TextAlign.center,),
+                            Text("Caso: ${rowData['Caso']}",style: TextStyle(
+                              fontSize: 15.0,
+                              color: Color.fromRGBO(102 ,45, 145, 30), // Establece el color RGB aquí (en este caso, rojo)
+                            ),),
                             Divider(),
                           ],
                         );
                       }),
                     );
-
-
-                  /*   return ListView.builder(
-                      itemCount: ordenNumeros?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        final ordenNumero = ordenNumeros![index];
-                        final rowData = rowsetData![index]; // Datos correspondientes a la orden actual
-                        return Column(
-                          children: [
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.all(0.0),
-                                elevation: 5,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                              ),
-                              onPressed: () async{
-                                // Acción a realizar cuando se presione el botón
-                                // Puedes agregar tu lógica aquí
-                                ordenTipo = rowData['Orden_Tipo'];
-                                ordenN = rowData['Orden_Numero'];
-
-                                showDialog(
-                                    context: context,
-                                    builder: (BuildContext context){
-                                      bool isApproving = false; // Variable para rastrear si se está aprobando
-
-                                      return AlertDialog(
-                                        title: Text('Orden  N°$ordenN'),
-                                        actions: <Widget>[
-                                          ElevatedButton(
-                                            style: ButtonStyle(
-                                              backgroundColor: MaterialStateProperty.all<Color>(Color.fromRGBO(212 , 20, 90, 50)),
-                                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10.0),
-                                                ),
-                                              ),
-                                            ),
-                                            child: Text('Cancelar'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                          ElevatedButton(
-                                            style: ButtonStyle(
-                                              backgroundColor: MaterialStateProperty.all<Color>(Color.fromRGBO(212 , 20, 90, 50)),
-                                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10.0),
-                                                ),
-                                              ),
-                                            ),
-                                            child: Text('Aprobar'),
-                                            onPressed: () async {
-                                              // Aquí puedes hacer lo que quieras con el texto ingresado
-                                              var baseUrl =  direc;
-                                              late String api = "/jderest/v3/orchestrator/MQ0602A_ORCH";
-                                              var url = Uri.parse(baseUrl + api);
-
-                                              var _payload =  json.encode (
-                                                  {
-                                                    "username": user,
-                                                    "password": pass,
-                                                    "Orden_Tipo": ordenTipo,
-                                                    "Orden_Numero": ordenN,
-                                                    "Estado": estadoAprobacionG
-                                                  });
-
-                                              var _headers = {
-                                                "Authorization" : autorizacionGlobal,
-                                                'Content-Type': 'application/json',
-                                              };
-                                              var response = await http.post(url, body: _payload, headers: _headers);
-                                              respuesta =response.body.toString();
-
-                                              print("este es el status " + response.statusCode.toString());
-
-                                              print ( estadoAprobacionG );
-                                              setState(() {
-                                                // Aquí puedes recargar los datos o realizar una nueva solicitud HTTP si es necesario
-                                                 _listado = obtenerRowset(); // Si necesitas recargar los datos
-
-                                              });
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    });
-                              },
-                              child: Ink(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [Color.fromRGBO(212, 20, 90, 50), Color.fromRGBO(102, 45, 145, 50)],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    ),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  padding: const EdgeInsets.all(10),
-                                  constraints: const BoxConstraints(minWidth: 88.0),
-                                  child: Text(ordenNumero, textAlign: TextAlign.center),
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Text(" ${rowData['Orden_Tipo']}" + " | ${rowData['Desc_Equipo']}"),
-                           // Text(" ${rowData['Desc_Equipo']}"),
-                            Text("Fecha Solicitud: ${rowData['Fecha_solicitud']}"),
-                            Text(" ${rowData['Descripcion']}"+ "  | Caso: ${rowData['Caso']}"),
-                            //Text("Caso: ${rowData['Caso']}"),
-                            Divider(),
-                          ],
-                        );
-                      },
-                    );*/
                   }
                 },
               );
