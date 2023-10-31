@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final controller = PageController();
 
   @override
-  void disponse(){
+  void dispose(){
     controller.dispose();
     super.dispose();
   }
@@ -75,8 +75,9 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Container(
+      resizeToAvoidBottomInset: true,
+      body:
+      Container(
         padding: const EdgeInsets.only(bottom: 80),
         decoration: const BoxDecoration(
           image: DecorationImage(
@@ -306,166 +307,52 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 ]
             ),
-          Column(
-           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              alignment: Alignment.center,
-              child: Image.asset("images/logo.png"),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-              //URL
-              child: TextField(
-                controller: myController3,
-                style: const TextStyle(
-                  color: Colors.black,
-                ),
-                decoration: const InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  hintText: 'URL/HTTP',
-                  hintStyle: TextStyle(color: Colors.grey),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0),
-                    ),
-                    borderSide: BorderSide.none,
+          SingleChildScrollView(
+            child:           Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    alignment: Alignment.center,
+                    child: Image.asset("images/logo.png"),
                   ),
-                ),
-                onChanged: (value) {
-                  direccion = value;
-                  global.direc = value;
-                },
-              ),
-            ),
-            Container(
-                padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                child: TextField(
-                  controller: myController4,
-                  style: const TextStyle(
-                    color: Colors.black,
-                  ),
-                  decoration: const InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    hintText: 'SOLICITANTE',
-                    hintStyle: TextStyle(color: Colors.grey),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10.0),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                    //URL
+                    child: TextField(
+                      controller: myController3,
+                      style: const TextStyle(
+                        color: Colors.black,
                       ),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  onChanged: (value) {
-                    value=  value.toUpperCase() ;
-                    solicitante = value;
-                    global.solicitanteG = value;
-                  },
-                )
-            ),
-            Container(
-                padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                child: TextField(
-                  controller: myController5,
-                  style: const TextStyle(
-                    color: Colors.black,
-                  ),
-                  decoration: const InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    hintText: 'ESTADO DE APROBACIÓN',
-                    hintStyle: TextStyle(color: Colors.grey),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10.0),
+                      decoration: const InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'URL/HTTP',
+                        hintStyle: TextStyle(color: Colors.grey),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10.0),
+                          ),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
-                      borderSide: BorderSide.none,
+                      onChanged: (value) {
+                        direccion = value;
+                        global.direc = value;
+                      },
                     ),
                   ),
-                  onChanged: (value) {
-                    value=  value.toUpperCase() ;
-                    estAprobacion = value;
-                    global.estadoAprobacionG= value;
-                  },
-                )
-            ),
-            Row(
-              children: [
-                Expanded(
-                    child:  Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                        child: TextField(
-                          controller: myController6,
-                          style: const TextStyle(
-                            color: Colors.black,
-                          ),
-                          decoration: const InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'ESTADO 1',
-                            hintStyle: TextStyle(color: Colors.grey),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10.0),
-                              ),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                          textAlign: TextAlign.center, // Centra el texto horizontalmente dentro del TextField
-                          onChanged: (value) {
-                            value=  value.toUpperCase() ;
-                            est1 = value;
-                            global.esta1G = value;
-                          },
-                        )
-                    ),),
-                Expanded(
-                    child:   Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                        child: TextField(
-                          controller: myController7,
-                          style: const TextStyle(
-                            color: Colors.black,
-                          ),
-                          decoration: const InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'ESTADO 2',
-                            hintStyle: TextStyle(color: Colors.grey),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10.0),
-                              ),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                          textAlign: TextAlign.center, // Centra el texto horizontalmente dentro del TextField
-                          onChanged: (value) {
-                            value=  value.toUpperCase() ;
-                            est2 = value;
-                            global.esta2G = value;
-                          },
-                        )
-                    ) ),
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child:  Container(
+                  Container(
                       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                       child: TextField(
-                        controller: myController8,
+                        controller: myController4,
                         style: const TextStyle(
                           color: Colors.black,
                         ),
                         decoration: const InputDecoration(
                           filled: true,
                           fillColor: Colors.white,
-                          hintText: 'ESTADO 3',
+                          hintText: 'SOLICITANTE',
                           hintStyle: TextStyle(color: Colors.grey),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(
@@ -474,57 +361,24 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderSide: BorderSide.none,
                           ),
                         ),
-                        textAlign: TextAlign.center, // Centra el texto horizontalmente dentro del TextField
                         onChanged: (value) {
                           value=  value.toUpperCase() ;
-                          est3 = value;
-                          global.esta3G = value;
+                          solicitante = value;
+                          global.solicitanteG = value;
                         },
                       )
-                  ),),
-                Expanded(
-                    child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                        child: TextField(
-                          controller: myController9,
-                          style: const TextStyle(
-                            color: Colors.black,
-                          ),
-                          decoration: const InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'ESTADO 4',
-                            hintStyle: TextStyle(color: Colors.grey),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10.0),
-                              ),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                          textAlign: TextAlign.center, // Centra el texto horizontalmente dentro del TextField
-                          onChanged: (value) {
-                            value=  value.toUpperCase() ;
-                            est4 = value;
-                            global.esta4G = value;
-                          },
-                        )
-                    ) ),
-              ],),
-            Row(
-              children: [
-                Expanded(
-                  child:  Container(
+                  ),
+                  Container(
                       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                       child: TextField(
-                        controller: myController10,
+                        controller: myController5,
                         style: const TextStyle(
                           color: Colors.black,
                         ),
                         decoration: const InputDecoration(
                           filled: true,
                           fillColor: Colors.white,
-                          hintText: 'ESTADO 5',
+                          hintText: 'ESTADO DE APROBACIÓN',
                           hintStyle: TextStyle(color: Colors.grey),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(
@@ -533,46 +387,195 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderSide: BorderSide.none,
                           ),
                         ),
-                        textAlign: TextAlign.center, // Centra el texto horizontalmente dentro del TextField
                         onChanged: (value) {
                           value=  value.toUpperCase() ;
-                          est5 = value;
-                          global.esta5G = value;
+                          estAprobacion = value;
+                          global.estadoAprobacionG= value;
                         },
                       )
-                  ),),
-                Expanded(
-                    child:Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                        child: TextField(
-                          controller: myController11,
-                          style: const TextStyle(
-                            color: Colors.black,
-                          ),
-                          decoration: const InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'ESTADO 6',
-                            hintStyle: TextStyle(color: Colors.grey),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10.0),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child:  Container(
+                            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                            child: TextField(
+                              controller: myController6,
+                              style: const TextStyle(
+                                color: Colors.black,
                               ),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                          textAlign: TextAlign.center, // Centra el texto horizontalmente dentro del TextField
-                          onChanged: (value) {
-                            value=  value.toUpperCase() ;
-                            est6 = value;
-                            global.esta6G = value;
-                          },
-                        )
-                    ) ),
-              ],
-            ),
+                              decoration: const InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white,
+                                hintText: 'ESTADO 1',
+                                hintStyle: TextStyle(color: Colors.grey),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10.0),
+                                  ),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                              textAlign: TextAlign.center, // Centra el texto horizontalmente dentro del TextField
+                              onChanged: (value) {
+                                value=  value.toUpperCase() ;
+                                est1 = value;
+                                global.esta1G = value;
+                              },
+                            )
+                        ),),
+                      Expanded(
+                          child:   Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                              child: TextField(
+                                controller: myController7,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                ),
+                                decoration: const InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  hintText: 'ESTADO 2',
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0),
+                                    ),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                                textAlign: TextAlign.center, // Centra el texto horizontalmente dentro del TextField
+                                onChanged: (value) {
+                                  value=  value.toUpperCase() ;
+                                  est2 = value;
+                                  global.esta2G = value;
+                                },
+                              )
+                          ) ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child:  Container(
+                            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                            child: TextField(
+                              controller: myController8,
+                              style: const TextStyle(
+                                color: Colors.black,
+                              ),
+                              decoration: const InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white,
+                                hintText: 'ESTADO 3',
+                                hintStyle: TextStyle(color: Colors.grey),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10.0),
+                                  ),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                              textAlign: TextAlign.center, // Centra el texto horizontalmente dentro del TextField
+                              onChanged: (value) {
+                                value=  value.toUpperCase() ;
+                                est3 = value;
+                                global.esta3G = value;
+                              },
+                            )
+                        ),),
+                      Expanded(
+                          child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                              child: TextField(
+                                controller: myController9,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                ),
+                                decoration: const InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  hintText: 'ESTADO 4',
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0),
+                                    ),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                                textAlign: TextAlign.center, // Centra el texto horizontalmente dentro del TextField
+                                onChanged: (value) {
+                                  value=  value.toUpperCase() ;
+                                  est4 = value;
+                                  global.esta4G = value;
+                                },
+                              )
+                          ) ),
+                    ],),
+                  Row(
+                    children: [
+                      Expanded(
+                        child:  Container(
+                            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                            child: TextField(
+                              controller: myController10,
+                              style: const TextStyle(
+                                color: Colors.black,
+                              ),
+                              decoration: const InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white,
+                                hintText: 'ESTADO 5',
+                                hintStyle: TextStyle(color: Colors.grey),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10.0),
+                                  ),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                              textAlign: TextAlign.center, // Centra el texto horizontalmente dentro del TextField
+                              onChanged: (value) {
+                                value=  value.toUpperCase() ;
+                                est5 = value;
+                                global.esta5G = value;
+                              },
+                            )
+                        ),),
+                      Expanded(
+                          child:Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                              child: TextField(
+                                controller: myController11,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                ),
+                                decoration: const InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  hintText: 'ESTADO 6',
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0),
+                                    ),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                                textAlign: TextAlign.center, // Centra el texto horizontalmente dentro del TextField
+                                onChanged: (value) {
+                                  value=  value.toUpperCase() ;
+                                  est6 = value;
+                                  global.esta6G = value;
+                                },
+                              )
+                          ) ),
+                    ],
+                  ),
 
-          ]
+                ]
+            ),
           ),
 
           ],
@@ -641,43 +644,27 @@ class _LoginScreenState extends State<LoginScreen> {
     _cargarPreferencias();
   }
 
-  Future<void>  _saveData(bool value0) async{
-    value = login;
-    value2=password;
-    value3=direccion;
-    value4=solicitante;
-    value5 = estAprobacion;
-    value6 = est1;
-    value7 = est2;
-    value8 = est3;
-    value9 = est4;
-    value10 = est5;
-    value11 = est6;
-
-
-
+  Future<void> _saveData(bool value0) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("TestString_key", value);
-    prefs.setString("TestString_key2", value2);
-    prefs.setString("TestString_key3", value3);
-    prefs.setString("TestString_key4", value4);
-    prefs.setString("TestString_key5", value5);
-    prefs.setString("TestString_key6", value6);
-    prefs.setString("TestString_key7", value7);
-    prefs.setString("TestString_key8", value8);
-    prefs.setString("TestString_key9", value9);
-    prefs.setString("TestString_key10", value10);
-    prefs.setString("TestString_key11", value11);
 
-
+    prefs.setString("TestString_key", myController.text);
+    prefs.setString("TestString_key2", myController2.text);
+    prefs.setString("TestString_key3", myController3.text);
+    prefs.setString("TestString_key4", myController4.text);
+    prefs.setString("TestString_key5", myController5.text);
+    prefs.setString("TestString_key6", myController6.text);
+    prefs.setString("TestString_key7", myController7.text);
+    prefs.setString("TestString_key8", myController8.text);
+    prefs.setString("TestString_key9", myController9.text);
+    prefs.setString("TestString_key10", myController10.text);
+    prefs.setString("TestString_key11", myController11.text);
 
     setState(() {
       _isChecked = value0;
       prefs.setBool('isChecked', value0);
     });
-
-
   }
+
   Future<void> _cargarPreferencias() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
 

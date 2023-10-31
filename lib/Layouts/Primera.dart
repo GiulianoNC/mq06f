@@ -10,6 +10,7 @@ String baseUrl = direc;
 String ordenTipo = "";
 String estado = "";
 String ordenN = "";
+bool loading = false; // Nuevo estado para controlar la visibilidad del indicador de progreso
 
 class Primera extends StatefulWidget {
   @override
@@ -59,7 +60,46 @@ class _PrimeraState extends State<Primera> {
 
     return ordenNumeros;
   }
+  //PARA MOSTRAR MENSAJE EXITOSO
+  OverlayEntry? _overlayEntry;
 
+  void showCustomMessage(BuildContext context, String message) {
+    _overlayEntry = OverlayEntry(
+      builder: (context) {
+        return Positioned(
+          top: 180,
+          left: 50,
+          right: 50,
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              alignment: Alignment.center,
+              child: Card(
+                color: Colors.grey, // Color de fondo del mensaje
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    message,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.deepPurple,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    Overlay.of(context)!.insert(_overlayEntry!);
+
+    // Cierra el mensaje después de un tiempo (por ejemplo, 2 segundos)
+    Future.delayed(Duration(seconds: 0), () {
+      _overlayEntry?.remove();
+    });
+  }
 
   @override
   void initState() {
@@ -142,109 +182,143 @@ class _PrimeraState extends State<Primera> {
                       children: List.generate(ordenNumeros?.length ?? 0, (index) {
                         final ordenNumero = ordenNumeros![index];
                         final rowData = rowsetData![index]; // Datos correspondientes a la orden actual
-                       return Column(
+                        bool isApproving = false; // Mover la variable aquí para rastrear si se está aprobando
+
+                        return Column(
                           children: [
-                            ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.all(0.0),
-                                elevation: 5,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                              ),
-                              onPressed: () async{
-                                // Acción a realizar cuando se presione el botón
-                                // Puedes agregar tu lógica aquí
-                                ordenTipo = rowData['Orden_Tipo'];
-                                ordenN = rowData['Orden_Numero'];
-
-                                showDialog(
-                                    context: context,
-                                    builder: (BuildContext context){
-                                      bool isApproving = false; // Variable para rastrear si se está aprobando
-
-                                      return AlertDialog(
-                                        title: Text('Orden  N°$ordenN',    style: TextStyle(
-                                        color: Color.fromRGBO(102, 45, 145, 30), // Color RGB (rojo, verde, azul, opacidad)
-                                        fontSize: 20.0, // Puedes ajustar el tamaño de la fuente según tus preferencias
-                                      ),  ),
-                                        actions: <Widget>[
-                                          ElevatedButton(
-                                            style: ButtonStyle(
-                                              backgroundColor: MaterialStateProperty.all<Color>(Color.fromRGBO(212 , 20, 90, 50)),
-                                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10.0),
-                                                ),
-                                              ),
-                                            ),
-                                            child: Text('Cancelar'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                         ElevatedButton(
-                                            style: ButtonStyle(
-                                              backgroundColor: MaterialStateProperty.all<Color>(Color.fromRGBO(212 , 20, 90, 50)),
-                                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10.0),
-                                                ),
-                                              ),
-                                            ),
-                                            child: Text('Aprobar'),
-                                            onPressed: () async {
-                                              // Aquí puedes hacer lo que quieras con el texto ingresado
-                                              var baseUrl =  direc;
-                                              late String api = "jderest/v3/orchestrator/MQ0602A_ORCH";
-                                              var url = Uri.parse(baseUrl + api);
-
-                                              var _payload =  json.encode (
-                                                  {
-                                                    "username": user,
-                                                    "password": pass,
-                                                    "Orden_Tipo": ordenTipo,
-                                                    "Orden_Numero": ordenN,
-                                                    "Estado": estadoAprobacionG
-                                                  });
-
-                                              var _headers = {
-                                                "Authorization" : autorizacionGlobal,
-                                                'Content-Type': 'application/json',
-                                              };
-                                              var response = await http.post(url, body: _payload, headers: _headers).timeout(Duration(seconds: 60));
-                                              respuesta =response.body.toString();
-
-                                              print("este es el status " + response.statusCode.toString());
-
-                                              print ( estadoAprobacionG );
-                                              setState(() {
-                                                 _listado = obtenerRowset(); // Si necesitas recargar los datos
-
-                                              });
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    });
-                              },
-                              child: Ink(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [Color.fromRGBO(212, 20, 90, 50), Color.fromRGBO(102, 45, 145, 50)],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    padding: const EdgeInsets.all(0.0),
+                                    elevation: 5,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(50),
                                     ),
-                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                  padding: const EdgeInsets.all(10),
-                                  constraints: const BoxConstraints(minWidth: 88.0),
-                                  child: Text(ordenNumero, textAlign: TextAlign.center),
+                                  onPressed: () async{
+                                    setState(() {
+                                      isApproving = true; // Muestra el indicador de carga al presionar el botón
+                                    });
+                                    // Acción a realizar cuando se presione el botón
+                                    // Puedes agregar tu lógica aquí
+                                    ordenTipo = rowData['Orden_Tipo'];
+                                    ordenN = rowData['Orden_Numero'];
+
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context){
+                                          bool isApproving = false; // Variable para rastrear si se está aprobando
+
+                                          return AlertDialog(
+                                            title: Text('Orden  N°$ordenN',    style: TextStyle(
+                                              color: Color.fromRGBO(102, 45, 145, 30), // Color RGB (rojo, verde, azul, opacidad)
+                                              fontSize: 20.0, // Puedes ajustar el tamaño de la fuente según tus preferencias
+                                            ),  ),
+                                            actions: <Widget>[
+                                              ElevatedButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor: MaterialStateProperty.all<Color>(Color.fromRGBO(212 , 20, 90, 50)),
+                                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                    RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(10.0),
+                                                    ),
+                                                  ),
+                                                ),
+                                                child: Text('Cancelar'),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                              ElevatedButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor: MaterialStateProperty.all<Color>(Color.fromRGBO(212 , 20, 90, 50)),
+                                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                    RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(10.0),
+                                                    ),
+                                                  ),
+                                                ),
+                                                child: Text('Aprobar'),
+                                                onPressed: () async {
+                                                  setState(() {
+                                                    isApproving = true; // Muestra el indicador de carga
+                                                  });
+                                                  try{
+                                                    // Aquí puedes hacer lo que quieras con el texto ingresado
+                                                    var baseUrl =  direc;
+                                                    late String api = "jderest/v3/orchestrator/MQ0602A_ORCH";
+                                                    var url = Uri.parse(baseUrl + api);
+
+                                                    var _payload =  json.encode (
+                                                        {
+                                                          "username": user,
+                                                          "password": pass,
+                                                          "Orden_Tipo": ordenTipo,
+                                                          "Orden_Numero": ordenN,
+                                                          "Estado": estadoAprobacionG
+                                                        });
+
+                                                    var _headers = {
+                                                      "Authorization" : autorizacionGlobal,
+                                                      'Content-Type': 'application/json',
+                                                    };
+                                                    var response = await http.post(url, body: _payload, headers: _headers).timeout(Duration(seconds: 60));
+                                                    respuesta =response.body.toString();
+
+                                                    print("este es el status " + response.statusCode.toString());
+
+                                                    // Después de completar la tarea de aprobación exitosa
+                                                    // Muestra un SnackBar
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      SnackBar(
+                                                        content: Text('Aprobado'),
+                                                        action: SnackBarAction(
+                                                          label: 'Aceptar',
+                                                          onPressed: () {
+                                                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                                            showCustomMessage(context, 'AGREGADO EXITOSAMENTE');
+
+                                                          },
+                                                        ),
+                                                      ),
+                                                    );
+
+                                                    setState(() {
+                                                      _listado = obtenerRowset(); // Si necesitas recargar los datos
+
+                                                    });
+                                                  }catch(e){
+                                                    // Manejar errores
+                                                    print('Error: $e');
+                                                  }finally{
+                                                    // Asegúrate de restablecer loading a false después de completar la tarea, ya sea exitosa o con errores.
+                                                    setState(() {
+                                                      isApproving = false; // Oculta el indicador de carga
+                                                    });
+                                                  }
+
+                                                //  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        });
+                                  },
+                                  child: Ink(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [Color.fromRGBO(212, 20, 90, 50), Color.fromRGBO(102, 45, 145, 50)],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      padding: const EdgeInsets.all(10),
+                                      constraints: const BoxConstraints(minWidth: 88.0),
+                                      child: Text(ordenNumero, textAlign: TextAlign.center),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
                             SizedBox(height: 10),
                             Text(" ${rowData['Orden_Tipo']}" + " | ${rowData['Desc_Equipo']}"+
                                 " | ${rowData['Estado']}", style: TextStyle(
