@@ -11,6 +11,7 @@ String ordenTipo = "";
 String estado = "";
 String ordenN = "";
 bool loading = false; // Nuevo estado para controlar la visibilidad del indicador de progreso
+bool isAnalyzing = false;
 
 class Primera extends StatefulWidget {
   @override
@@ -151,41 +152,43 @@ class _PrimeraState extends State<Primera> {
             child: const SizedBox(),
           ),
         ),
-        body: FutureBuilder<List<String>>(
-          future: obtenerOrdenNumeros(),
-          builder: (context, snapshotOrdenes) {
-            if (snapshotOrdenes.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshotOrdenes.hasError) {
-              return Center(
-                child: Text('Error: check configuration or Login ${snapshotOrdenes.error}'),
-              );
-            } else {
-              final ordenNumeros = snapshotOrdenes.data;
-              return FutureBuilder<List<Map<String, dynamic>>>(
-                future: obtenerRowset(),
-                builder: (context, snapshotDatos) {
-                  if (snapshotDatos.connectionState == ConnectionState.waiting) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshotDatos.hasError) {
-                    return Center(
-                      child: Text('Error: ${snapshotDatos.error}'),
-                    );
-                  } else {
-                    final rowsetData = snapshotDatos.data;
-                    return GridView.count(
-                      crossAxisCount: 2, // Número de columnas que deseas mostrar
-                      children: List.generate(ordenNumeros?.length ?? 0, (index) {
-                        final ordenNumero = ordenNumeros![index];
-                        final rowData = rowsetData![index]; // Datos correspondientes a la orden actual
-                        bool isApproving = false; // Mover la variable aquí para rastrear si se está aprobando
+        body: Stack(
+          children: [
+            FutureBuilder<List<String>>(
+              future: obtenerOrdenNumeros(),
+              builder: (context, snapshotOrdenes) {
+                if (snapshotOrdenes.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshotOrdenes.hasError) {
+                  return Center(
+                    child: Text('Error: check configuration or Login ${snapshotOrdenes.error}'),
+                  );
+                } else {
+                  final ordenNumeros = snapshotOrdenes.data;
+                  return FutureBuilder<List<Map<String, dynamic>>>(
+                    future: obtenerRowset(),
+                    builder: (context, snapshotDatos) {
+                      if (snapshotDatos.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshotDatos.hasError) {
+                        return Center(
+                          child: Text('Error: ${snapshotDatos.error}'),
+                        );
+                      } else {
+                        final rowsetData = snapshotDatos.data;
+                        return GridView.count(
+                          crossAxisCount: 2, // Número de columnas que deseas mostrar
+                          children: List.generate(ordenNumeros?.length ?? 0, (index) {
+                            final ordenNumero = ordenNumeros![index];
+                            final rowData = rowsetData![index]; // Datos correspondientes a la orden actual
+                            bool isApproving = false; // Mover la variable aquí para rastrear si se está aprobando
 
-                        return Column(
-                          children: [
+                            return Column(
+                              children: [
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     padding: const EdgeInsets.all(0.0),
@@ -241,6 +244,7 @@ class _PrimeraState extends State<Primera> {
                                                 onPressed: () async {
                                                   setState(() {
                                                     isApproving = true; // Muestra el indicador de carga
+                                                    isAnalyzing = true;
                                                   });
                                                   try{
                                                     // Aquí puedes hacer lo que quieras con el texto ingresado
@@ -263,8 +267,10 @@ class _PrimeraState extends State<Primera> {
                                                     };
                                                     var response = await http.post(url, body: _payload, headers: _headers).timeout(Duration(seconds: 60));
                                                     respuesta =response.body.toString();
+                                                    print(estadoAprobacionG);
 
-                                                    print("este es el status " + response.statusCode.toString());
+
+                                                    print("este es el status " + response.statusCode.toString() );
 
                                                     // Después de completar la tarea de aprobación exitosa
                                                     // Muestra un SnackBar
@@ -293,10 +299,11 @@ class _PrimeraState extends State<Primera> {
                                                     // Asegúrate de restablecer loading a false después de completar la tarea, ya sea exitosa o con errores.
                                                     setState(() {
                                                       isApproving = false; // Oculta el indicador de carga
+                                                      isAnalyzing = false;
                                                     });
                                                   }
 
-                                                //  Navigator.of(context).pop();
+                                                  Navigator.of(context).pop();
                                                 },
                                               ),
                                             ],
@@ -319,37 +326,52 @@ class _PrimeraState extends State<Primera> {
                                     ),
                                   ),
                                 ),
-                            SizedBox(height: 10),
-                            Text(" ${rowData['Orden_Tipo']}" + " | ${rowData['Desc_Equipo']}"+
-                                " | ${rowData['Estado']}", style: TextStyle(
-                              fontSize: 12.0,
-                              color: Color.fromRGBO(102 ,45, 145, 30), // Establece el color RGB aquí (en este caso, rojo)
-                            ),
-                              textAlign: TextAlign.center,),
-                            // Text(" ${rowData['Desc_Equipo']}"),
-                            Text("Fecha Solicitud: ${rowData['Fecha_solicitud']}", style: TextStyle(
-                              fontSize: 15.0,
-                              color: Color.fromRGBO(102 ,45, 145, 30), // Establece el color RGB aquí (en este caso, rojo)
-                            ),
-                              textAlign: TextAlign.center,),
-                            Text(" ${rowData['Descripcion']}",style: TextStyle(
-                        fontSize: 12.0,
-                              color: Color.fromRGBO(102 ,45, 145, 30), // Establece el color RGB aquí (en este caso, rojo)
-                            ), textAlign: TextAlign.center,),
-                            Text("Caso: ${rowData['Caso']}",style: TextStyle(
-                              fontSize: 15.0,
-                              color: Color.fromRGBO(102 ,45, 145, 30), // Establece el color RGB aquí (en este caso, rojo)
-                            ),),
-                            Divider(),
-                          ],
+                                SizedBox(height: 10),
+                                Text(" ${rowData['Orden_Tipo']}" + " | ${rowData['Desc_Equipo']}"+
+                                    " | ${rowData['Estado']}", style: TextStyle(
+                                  fontSize: 12.0,
+                                  color: Color.fromRGBO(102 ,45, 145, 30), // Establece el color RGB aquí (en este caso, rojo)
+                                ),
+                                  textAlign: TextAlign.center,),
+                                // Text(" ${rowData['Desc_Equipo']}"),
+                                Text("Fecha Solicitud: ${rowData['Fecha_solicitud']}", style: TextStyle(
+                                  fontSize: 15.0,
+                                  color: Color.fromRGBO(102 ,45, 145, 30), // Establece el color RGB aquí (en este caso, rojo)
+                                ),
+                                  textAlign: TextAlign.center,),
+                                Text(" ${rowData['Descripcion']}",style: TextStyle(
+                                  fontSize: 12.0,
+                                  color: Color.fromRGBO(102 ,45, 145, 30), // Establece el color RGB aquí (en este caso, rojo)
+                                ), textAlign: TextAlign.center,),
+                                Text("Caso: ${rowData['Caso']}",style: TextStyle(
+                                  fontSize: 15.0,
+                                  color: Color.fromRGBO(102 ,45, 145, 30), // Establece el color RGB aquí (en este caso, rojo)
+                                ),),
+                                Divider(),
+                              ],
+                            );
+                          }),
                         );
-                      }),
-                    );
-                  }
-                },
-              );
-            }
-          },
+                      }
+                    },
+                  );
+                }
+              },
+            ),
+            if (isAnalyzing)
+              Container(
+                color: Colors.black.withOpacity(0.5), // Fondo oscuro
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircularProgressIndicator(), // Puedes usar otro indicador de carga
+                      Text('Analizando, espere unos segundos...'),
+                    ],
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
